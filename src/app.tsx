@@ -5,11 +5,11 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import OfferPage from './pages/offer-page/offer-page';
 import NotFoundPage from './pages/not-found-page/not-found-page';
 import PrivateRoute from './components/private-route';
-import { placeCardProps } from './components/place-card';
+import { OffersType } from './mocks/offers';
 
 type AppProps = {
   placesCount: number;
-  offers: ({ id: number } & placeCardProps)[];
+  offers: OffersType[];
 };
 
 export default function App({ placesCount, offers }: AppProps): JSX.Element {
