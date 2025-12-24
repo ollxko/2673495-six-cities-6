@@ -8,17 +8,17 @@ import PrivateRoute from './components/private-route';
 import { OffersType } from './mocks/offers';
 
 type AppProps = {
-  placesCount: number;
+
   offers: OffersType[];
 };
 
-export default function App({ placesCount, offers }: AppProps): JSX.Element {
+export default function App({ offers }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route
           path="/"
-          element={<MainPage placesCount={placesCount} offers={offers} />}
+          element={<MainPage offers={offers} />}
         >
         </Route>
         <Route path="/login" element={<LoginPage />}></Route>

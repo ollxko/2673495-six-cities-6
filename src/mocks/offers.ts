@@ -1,11 +1,18 @@
 import { placeCardProps } from '../components/place-card';
 
 export type OffersType = placeCardProps & {
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-};
+  city: {
+    name: string;
+    location: {
+      latitude: number;
+      longitude: number;
+    };};
+} & { location: {
+      latitude: number;
+      longitude: number;
+    }; };
+
+
 export const offersMocks: OffersType[] = [
   {
     id: 1,
@@ -20,6 +27,11 @@ export const offersMocks: OffersType[] = [
       latitude: 52.3909553943508,
       longitude: 4.85309666406198,
     },
+    city:{name: 'Amsterdam',
+      location: {
+        latitude: 52.37454,
+        longitude: 4.897976,}
+    }
   },
   {
     id: 2,
@@ -34,7 +46,11 @@ export const offersMocks: OffersType[] = [
       latitude: 52.3609553943508,
       longitude: 4.85309666406198,
     },
-  },
+    city:{name: 'Amsterdam',
+      location: {
+        latitude: 52.37454,
+        longitude: 4.897976,}
+    }},
   {
     id: 3,
     mark: false,
@@ -48,7 +64,11 @@ export const offersMocks: OffersType[] = [
       latitude: 52.3909553943508,
       longitude: 4.929309666406198,
     },
-  },
+    city:{name: 'Amsterdam',
+      location: {
+        latitude: 52.37454,
+        longitude: 4.897976,}
+    }},
   {
     id: 4,
     mark: true,
@@ -62,5 +82,30 @@ export const offersMocks: OffersType[] = [
       latitude: 52.3809553943508,
       longitude: 4.939309666406198,
     },
+    city:{name: 'Amsterdam',
+      location: {
+        latitude: 52.37454,
+        longitude: 4.897976,}
+    }},
+  {
+    id: 5,
+    name: 'The Pondhouse - A Magical Place',
+    type: 'apartment',
+    priceValue: 340,
+    imageSrc: 'https://14.design.htmlacademy.pro/static/hotel/9.jpg',
+    city: {
+      'name': 'Paris',
+      'location': {
+        'latitude': 48.85661,
+        'longitude': 2.351499,
+      }
+    },
+    location: {
+      latitude: 48.868610000000004,
+      longitude: 2.342499,
+    },
+    isInBookmarks: false,
+    mark: true,
+    rating: 3.6
   },
 ];
