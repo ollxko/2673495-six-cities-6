@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { OffersType } from '../../mocks/offers';
 import PlaceCardList from '../../components/place-card-list';
@@ -12,7 +12,10 @@ type MainPageProps = {
   offers: OffersType[];
 };
 
-const CITY_COORDINATES: Record<string, { latitude: number; longitude: number }> = {
+const CITY_COORDINATES: Record<
+  string,
+  { latitude: number; longitude: number }
+> = {
   Paris: { latitude: 48.85661, longitude: 2.351499 },
   Cologne: { latitude: 50.93753, longitude: 6.96028 },
   Brussels: { latitude: 50.85045, longitude: 4.34878 },
@@ -24,11 +27,14 @@ const CITY_COORDINATES: Record<string, { latitude: number; longitude: number }> 
 function MainPage({ offers }: MainPageProps): JSX.Element {
   const dispatch = useDispatch();
   const selectedCity = useSelector((state: { city: string }) => state.city);
-  const selectedSort = useSelector((state: { sortOption: SortOption }) => state.sortOption || 'Popular');
+  const selectedSort = useSelector(
+    (state: { sortOption: SortOption }) => state.sortOption || 'Popular'
+  );
+  const [hoveredCardId, setHoveredCardId] = useState<number | null>(null);
 
-  const filteredOffers = useMemo(() =>
-    offers.filter((offer) => offer.city.name === selectedCity),
-  [offers, selectedCity]
+  const filteredOffers = useMemo(
+    () => offers.filter((offer) => offer.city.name === selectedCity),
+    [offers, selectedCity]
   );
 
   const sortedOffers = useMemo(() => {
@@ -54,9 +60,10 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
 
   const cityOffersCount = filteredOffers.length;
 
-  const cityLocation = filteredOffers.length > 0
-    ? filteredOffers[0].city.location
-    : (CITY_COORDINATES[selectedCity] || CITY_COORDINATES.Paris);
+  const cityLocation =
+    filteredOffers.length > 0
+      ? filteredOffers[0].city.location
+      : CITY_COORDINATES[selectedCity] || CITY_COORDINATES.Paris;
 
   const handleCityChange = (city: string) => {
     dispatch(changeCity(city));
@@ -110,7 +117,14 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <CityList
-            cities={['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf']}
+            cities={[
+              'Paris',
+              'Cologne',
+              'Brussels',
+              'Amsterdam',
+              'Hamburg',
+              'Dusseldorf',
+            ]}
             activeCity={selectedCity}
             onCityChange={handleCityChange}
           />
@@ -122,15 +136,22 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
               <b className="places__found">
                 {cityOffersCount} places to stay in {selectedCity}
               </b>
-              <SortingOptions/>
+              <SortingOptions />
               <div className="cities__places-list places__list tabs__content">
-                <PlaceCardList offers={sortedOffers} />
+                <PlaceCardList
+                  offers={sortedOffers}
+                  onCardHover={setHoveredCardId}
+                />
               </div>
             </section>
             <div className="cities__right-section">
               <section className="cities__map map">
                 <Map2
-                  city={{ lat: cityLocation.latitude, lng: cityLocation.longitude, zoom: 10 }}
+                  city={{
+                    lat: cityLocation.latitude,
+                    lng: cityLocation.longitude,
+                    zoom: 10,
+                  }}
                   points={sortedOffers
                     .filter((offer) => offer.location)
                     .map((offer) => ({
@@ -140,6 +161,7 @@ function MainPage({ offers }: MainPageProps): JSX.Element {
                       title: offer.name,
                     }))}
                   selectedPoint={undefined}
+                  hoveredPointId={hoveredCardId}
                 />
               </section>
             </div>

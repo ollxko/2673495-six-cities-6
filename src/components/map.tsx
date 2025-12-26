@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState} from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { Icon, Marker, layerGroup, Map, TileLayer } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -7,6 +7,8 @@ const URL_MARKER_DEFAULT =
 
 const URL_MARKER_CURRENT =
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/demo/interactive-map/main-pin.svg';
+
+const URL_MARKER_ACTIVE = '/img/pin-active.svg';
 
 export type City = {
   lat: number;
@@ -27,6 +29,7 @@ type MapProps = {
   city: City;
   points: Points;
   selectedPoint: Point | undefined;
+  hoveredPointId?: number | null;
 };
 
 const defaultCustomIcon = new Icon({
@@ -41,7 +44,18 @@ const currentCustomIcon = new Icon({
   iconAnchor: [20, 40],
 });
 
-export default function MapComponent({ city, points, selectedPoint }: MapProps): JSX.Element {
+const activeCustomIcon = new Icon({
+  iconUrl: URL_MARKER_ACTIVE,
+  iconSize: [40, 40],
+  iconAnchor: [20, 40],
+});
+
+export default function MapComponent({
+  city,
+  points,
+  selectedPoint,
+  hoveredPointId,
+}: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<Map | null>(null);
   const isRenderedRef = useRef<boolean>(false);
@@ -85,21 +99,25 @@ export default function MapComponent({ city, points, selectedPoint }: MapProps):
           lng: point.lng,
         });
 
-        marker
-          .setIcon(
-            selectedPoint !== undefined && point.id === selectedPoint.id
-              ? currentCustomIcon
-              : defaultCustomIcon
-          )
-          .addTo(markerLayer);
+        let icon = defaultCustomIcon;
+        if (selectedPoint !== undefined && point.id === selectedPoint.id) {
+          icon = currentCustomIcon;
+        } else if (
+          hoveredPointId !== undefined &&
+          hoveredPointId !== null &&
+          point.id === hoveredPointId
+        ) {
+          icon = activeCustomIcon;
+        }
+
+        marker.setIcon(icon).addTo(markerLayer);
       });
 
       return () => {
         map.removeLayer(markerLayer);
       };
     }
-  }, [map, points, selectedPoint]);
+  }, [map, points, selectedPoint, hoveredPointId]);
 
   return <div style={{ height: '500px' }} ref={mapRef}></div>;
 }
-
