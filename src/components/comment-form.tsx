@@ -1,6 +1,14 @@
 import { useState, FormEvent, ChangeEvent } from 'react';
 
-function CommentForm(): JSX.Element {
+type CommentFormProps = {
+  onSubmit: (comment: string, rating: number) => Promise<void>;
+  isSubmitting?: boolean;
+};
+
+function CommentForm({
+  onSubmit,
+  isSubmitting = false,
+}: CommentFormProps): JSX.Element {
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
 
@@ -14,7 +22,17 @@ function CommentForm(): JSX.Element {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    if (rating === 0 || comment.trim().length < 50) {
+      return;
+    }
+
+    void (async () => {
+      await onSubmit(comment.trim(), rating);
+      setRating(0);
+      setComment('');
+    })();
   };
+  const isFormValid = rating > 0 && comment.trim().length >= 50;
 
   return (
     <form
@@ -135,6 +153,7 @@ function CommentForm(): JSX.Element {
         <button
           className="reviews__submit form__submit button"
           type="submit"
+          disabled={!isFormValid || isSubmitting}
         >
           Submit
         </button>

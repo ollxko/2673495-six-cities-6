@@ -4,8 +4,10 @@ import { Offer } from '../types/offer';
 export type placeCardProps = Pick<
   Offer,
   'id' | 'isPremium' | 'previewImage' | 'price' | 'rating' | 'isFavorite' | 'title' | 'type'
->;
-
+> & {
+  cardClassName?: string;
+  imageWrapperClassName?: string;
+};
 
 function PlaceCard({
   id,
@@ -16,15 +18,17 @@ function PlaceCard({
   isFavorite,
   title,
   type,
+  cardClassName = 'cities__card place-card',
+  imageWrapperClassName = 'cities__image-wrapper place-card__image-wrapper',
 }: placeCardProps): JSX.Element {
   return (
-    <article className="cities__card place-card">
+    <article className={cardClassName}>
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
         </div>
       )}
-      <div className="cities__image-wrapper place-card__image-wrapper">
+      <div className={imageWrapperClassName}>
         <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"

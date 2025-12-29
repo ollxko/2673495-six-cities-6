@@ -4,10 +4,13 @@ import { SortOption } from '../components/sorting-options';
 import {
   fetchOffersAction,
   fetchOfferByIdAction,
+  fetchNearbyOffersAction,
+  fetchCommentsAction,
   loginAction,
   checkAuthAction,
 } from './api-actions';
 import { Offer, DetailedOffer } from '../types/offer';
+import { Review } from '../types/review';
 import { getToken, saveToken, dropToken } from '../services/token';
 
 const initialState: {
@@ -17,6 +20,8 @@ const initialState: {
   isLoading: boolean;
   currentOffer: DetailedOffer | null;
   isOfferLoading: boolean;
+  nearbyOffers: Offer[];
+  comments: Review[];
   authorizationStatus: 'AUTH' | 'NO_AUTH';
   token: string | null;
 } = {
@@ -26,6 +31,8 @@ const initialState: {
   isLoading: false,
   currentOffer: null,
   isOfferLoading: false,
+  nearbyOffers: [],
+  comments: [],
   token: getToken(),
   authorizationStatus: getToken() ? 'AUTH' : 'NO_AUTH',
 };
@@ -64,6 +71,18 @@ export const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(fetchOfferByIdAction.rejected, (state) => {
       state.isOfferLoading = false;
+    })
+    .addCase(fetchNearbyOffersAction.fulfilled, (state, action) => {
+      state.nearbyOffers = action.payload;
+    })
+    .addCase(fetchNearbyOffersAction.rejected, (state) => {
+      state.nearbyOffers = [];
+    })
+    .addCase(fetchCommentsAction.fulfilled, (state, action) => {
+      state.comments = action.payload;
+    })
+    .addCase(fetchCommentsAction.rejected, (state) => {
+      state.comments = [];
     })
     .addCase(checkAuthAction.fulfilled, (state) => {
       state.authorizationStatus = 'AUTH';
